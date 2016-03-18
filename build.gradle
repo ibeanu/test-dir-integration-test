@@ -35,6 +35,7 @@ dependencies {
     testCompile("org.codehaus.groovy:groovy-all")
     testCompile("org.spockframework:spock-core")
     testCompile("org.spockframework:spock-spring")
+    testCompile("com.jayway.restassured:rest-assured:2.9.0")
 }
 
 task wrapper(type: Wrapper) {
