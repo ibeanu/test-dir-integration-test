@@ -4,7 +4,9 @@ import com.jayway.restassured.response.Response
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.context.annotation.PropertySource
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.web.WebAppConfiguration
 import spock.lang.Specification
 
@@ -14,12 +16,13 @@ import static com.jayway.restassured.config.RestAssuredConfig.newConfig
 
 @WebAppConfiguration
 @ContextConfiguration(classes = IntegrationTestDirApplication, loader = SpringApplicationContextLoader)
-public class DemoApplicationIntegrationSpec extends Specification {
+@TestPropertySource(locations="classpath:test.properties")
+public class ClinicalIndicators extends Specification {
 
-    @Value("\${baseUrl:http://162.13.50.221}")
+    @Value("\${baseUrl}")
     private String baseURI;
 
-    @Value("\${server.port:8080}")
+    @Value("\${server.port}")
     private int port;
 
 
