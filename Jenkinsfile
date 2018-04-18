@@ -2,16 +2,15 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
+        stage('Build and Run Integration Tests') {
             steps {
                 echo "Fake Build"
+                script {
+                    sh './gradlew clean test'
+                }
             }
         }
-        stage('Sonar') {
-            steps {
-                echo "Fake Sonar Scan"
-            }
-        }
+
     }
     post {
         always {
