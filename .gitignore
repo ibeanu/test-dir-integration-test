@@ -4,3 +4,7 @@ build/
 .idea/
 
 .gradle/
+
+.editorconfig
+
+out/
