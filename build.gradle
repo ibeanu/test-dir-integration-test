@@ -37,7 +37,3 @@ dependencies {
     testCompile("org.spockframework:spock-spring")
     testCompile("com.jayway.restassured:rest-assured:2.9.0")
 }
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.12'
-}
