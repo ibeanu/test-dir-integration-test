@@ -1,23 +1,18 @@
 package com.optum.testdir
 
 import com.jayway.restassured.config.ConnectionConfig
-import com.jayway.restassured.path.json.config.JsonPathConfig
 import com.jayway.restassured.response.Response
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.SpringApplicationContextLoader
-import org.springframework.context.annotation.PropertySource
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.web.WebAppConfiguration
 import spock.lang.Specification
 
-import java.util.concurrent.TimeUnit
-
 import static com.jayway.restassured.RestAssured.given
 import static com.jayway.restassured.config.LogConfig.logConfig
 import static com.jayway.restassured.config.RestAssuredConfig.newConfig
-import static com.optum.testdir.Constants.VERSION
 
 @WebAppConfiguration
 @ContextConfiguration(classes = IntegrationTestDirApplication, loader = SpringApplicationContextLoader)
@@ -30,25 +25,26 @@ public class ClinicalIndicators extends Specification {
     @Value("\${server.port}")
     private int port;
 
+    @Value("\${version}")
+    private String version
 
     @CompileStatic
     def dir() {
 
         given()
             .config(newConfig().logConfig(logConfig().enableLoggingOfRequestAndResponseIfValidationFails())
-            .connectionConfig(ConnectionConfig.connectionConfig()
-            .closeIdleConnectionsAfterEachResponseAfter(20, TimeUnit.SECONDS)))
+            .connectionConfig(ConnectionConfig.connectionConfig()))
             .baseUri(baseURI)
             .port(port)
     }
 
 
-    def "get /dir should return a clinical indicator"(int id, int statusCode, int serviceGroupId,
-                                                      String indicationId, String testId, String testName,
-                                                      String technology, String targetGene) {
+    def "get /clinical-indicators/{id} should return a clinical indicator"(int id, int statusCode, int serviceGroupId,
+                                                                           String indicationId, String testId, String testName,
+                                                                           String technology, String targetGene) {
 
         expect:
-        Response response = dir().get("/" + VERSION + "/clinical-indicators/{id}", id)
+        Response response = dir().get("/" + version + "/clinical-indicators/{id}", id)
         response.statusCode() == statusCode
         response.contentType().equals("application/json; charset=utf-8")
 
@@ -64,4 +60,58 @@ public class ClinicalIndicators extends Specification {
         1001 | 200        | 93             | "C153"       | "C153.6" | "BRAF-AKAP9 FISH/RT-PCR" | "FISH/Targeted mutation testing" | "BRAF-AKAP9"
     }
 
+    def "get /clinical-indicators-search with query should return list of clinical-indicators"(String query, String code,
+                                                                                               String structure, String indication,
+                                                                                               int statusCode) {
+        expect:
+        Response response = dir()
+        .queryParam("query", query)
+        .get("/" + version + "/clinical-indicators-search")
+
+        response.statusCode() == statusCode
+        response.contentType().equals("application/json; charset=utf-8")
+
+        def results = response.body().jsonPath().getList("")
+
+        results.get(0).getAt("optimal_family_structure").getAt("structure").equals(structure)
+        results.get(0).getAt("code").equals(code)
+        results.get(0).getAt("indication").equals(indication)
+
+        where:
+        query       | code     |structure   |indication |statusCode
+        "cancer"    |"100162.0"|"singleton" |"CDH1-related cancer syndrome"|200
+    }
+
+    def "get /clinical-indicators-autocomplete with query should return list of autocomplete clinical-indicators"(String query,
+                                                                                                                  List<String> result,
+                                                                                                                  int statusCode) {
+        expect:
+        Response response = dir()
+            .queryParam("query", query)
+            .get("/" + version + "/clinical-indicators-autocomplete")
+
+        response.statusCode() == statusCode
+        response.contentType().equals("application/json; charset=utf-8")
+
+        def responseList = response.body().jsonPath().getList("")
+        responseList.equals(result)
+        responseList.get(0).equals(result.get(0))
+
+        where:
+        query       |   result                    |statusCode
+        "cancer"    |   getAutoCompletResponseForCancer()  |200
+    }
+
+    def getAutoCompletResponseForCancer() {
+        return  Arrays.asList("Inherited breast cancer (without ovarian cancer) at high familial risk levels",
+            "Inherited breast cancer and ovarian cancer at high familial risk levels",
+            "CDH1-related cancer syndrome",
+            "Non-Small Cell Lung Cancer",
+            "Breast cancer",
+            "Inherited ovarian cancer",
+            "DICER1-related cancer predisposition",
+            "Non-Small Cell Lung Cancer",
+            "Non-Small Cell Lung Cancer",
+            "Non-Small Cell Lung Cancer")
+    }
 }
