@@ -1,9 +1,11 @@
 # Getting Started as a Developer
 
 ## Get Access to Tools
-- In Secure, request access to the Global Group **OpenShiftContainerPlatform_nonprod_users**
-  - Access to Openshift will also give you access to Jenkins
-  
+- In Secure, request access to the Global Groups 
+  - OpenShiftContainerPlatform_nonprod_users:  Access to the OpenShift Origin/Container Platform non prod environment
+  - OpenShiftContainerPlatform_nonprod_users_DMZ:  Access to the OpenShift Origin/Container Platform non prod DMZ environment
+  - OpenShiftContainerPlatform_prod_users:  **Restricted Use** Access to the OpenShift Container Platform prod environment
+  - OpenShiftContainerPlatform_prod_users_DMZ: Access to the OpenShift Origin/Container Platform prod DMZ environment
   
 # Tools and Links
 - OpenShift: https://ocp-ctc-core-nonprod.optum.com
