@@ -20,7 +20,7 @@ import static com.jayway.restassured.config.RestAssuredConfig.newConfig
 @WebAppConfiguration
 @ContextConfiguration(classes = IntegrationTestDirApplication, loader = SpringApplicationContextLoader)
 @TestPropertySource(locations = "classpath:test.properties")
-public class WGSGroupingsAutoComplete extends Specification {
+public class WGSGroupings extends Specification {
 
     @Value("\${baseUrl}")
     private String baseURI;
@@ -38,8 +38,7 @@ public class WGSGroupingsAutoComplete extends Specification {
 
         given()
             .config(newConfig().logConfig(logConfig().enableLoggingOfRequestAndResponseIfValidationFails())
-            .connectionConfig(ConnectionConfig.connectionConfig()
-            .closeIdleConnectionsAfterEachResponseAfter(20, TimeUnit.SECONDS)))
+            .connectionConfig(ConnectionConfig.connectionConfig()))
             .baseUri(baseURI)
             .port(port)
 
