@@ -17,8 +17,6 @@
 
 
 
-
-
 # To restore Jenkins after a POD restart which loses all Jenkins Config data
 - Install Jenkins Plugin:  SCM Sync Configuration (involves restart)
 - Configure GitHub Enterprise Servers
