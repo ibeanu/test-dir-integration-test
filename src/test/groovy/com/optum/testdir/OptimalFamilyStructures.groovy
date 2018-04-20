@@ -4,7 +4,6 @@ import com.jayway.restassured.response.Response
 
 class OptimalFamilyStructures extends IntegrationTestBase {
 
-
     def "get /optimal-family-structures with limit query should limit the listing"(int limit, int statusCode) {
 
 
