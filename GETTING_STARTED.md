@@ -39,5 +39,7 @@
   - You do this by navigating to the SCM Sync Confguration section and clicking "Reload config from SCM"
   - You may have to click "load from disk" link and possibly another permissions click through
 
-  
+  <BR>
+    test edit FRIDAY
+    
 
