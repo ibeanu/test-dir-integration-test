@@ -37,8 +37,7 @@ public class OptimalFamilyStructures extends Specification {
 
         given()
             .config(newConfig().logConfig(logConfig().enableLoggingOfRequestAndResponseIfValidationFails())
-            .connectionConfig(ConnectionConfig.connectionConfig()
-            .closeIdleConnectionsAfterEachResponseAfter(20, TimeUnit.SECONDS)))
+            .connectionConfig(ConnectionConfig.connectionConfig()))
             .baseUri(baseURI)
             .port(port)
 
