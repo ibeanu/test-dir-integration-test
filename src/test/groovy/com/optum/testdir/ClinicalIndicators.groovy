@@ -9,7 +9,6 @@ class ClinicalIndicators extends IntegrationTestBase {
                                                                            String indicationId, String testId, String testName,
                                                                            String technology, String targetGene,
                                                                            String contentType) {
-
         expect:
         Response response;
         try {
