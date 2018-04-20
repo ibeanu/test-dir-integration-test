@@ -12,7 +12,6 @@ import spock.lang.Specification
 
 import java.util.concurrent.TimeUnit
 
-import static com.jayway.restassured.RestAssured.expect
 import static com.jayway.restassured.RestAssured.given
 import static com.jayway.restassured.config.LogConfig.logConfig
 import static com.jayway.restassured.config.RestAssuredConfig.newConfig
@@ -20,7 +19,7 @@ import static com.jayway.restassured.config.RestAssuredConfig.newConfig
 @WebAppConfiguration
 @ContextConfiguration(classes = IntegrationTestDirApplication, loader = SpringApplicationContextLoader)
 @TestPropertySource(locations = "classpath:test.properties")
-public class WGSGroupings extends Specification {
+public class Genes extends Specification {
 
     @Value("\${baseUrl}")
     private String baseURI;
@@ -44,13 +43,13 @@ public class WGSGroupings extends Specification {
 
     }
 
-    def "get /wgs-groupings with limit query should limit the "(int limit, int statusCode) {
+    def "get /genes with limit query should limit the listing"(int limit, int statusCode) {
 
 
         expect:
         Response response = dir()
             .queryParam("limit",limit)
-            .get("/" + version + "/wgs-groupings")
+            .get("/" + version + "/genes")
 
         response.statusCode() == statusCode
         response.contentType().equals("application/json; charset=utf-8")
@@ -62,35 +61,32 @@ public class WGSGroupings extends Specification {
         4     | 200
     }
 
-    def "get /wgs-groupings should return WGS grouping entries"() {
+    def "get /genes should return list of target genes"() {
 
         expect:
         Response response = dir()
-            .get("/" + version + "/wgs-groupings")
+            .get("/" + version + "/genes")
         response.statusCode() == 200
         response.contentType().equals("application/json; charset=utf-8")
         assert response.body().jsonPath().getList("\$").size() >= 1
 
     }
 
-    def "get /wgs-groupings-autocomplete should return WGS grouping entries"(String groupingString, int resultNumber, int statusCode) {
+    def "get /genes-autocomplete should return suggestions for target genes based on the characters typed"(String queryString, int statusCode) {
         expect:
         Response response = dir()
-            .queryParam("query", groupingString)
-            .get("/" + version + "/wgs-groupings-autocomplete")
+            .queryParam("query", queryString)
+            .get("/" + version + "/genes-autocomplete")
         response.statusCode() == statusCode
         def resultList = response.body().jsonPath().getList("\$")
-        assert resultList.size().equals(resultNumber)
         for (item in resultList) {
-            assert item.toString().toLowerCase().contains(groupingString.toLowerCase())
+            assert item.toString().toLowerCase().contains(queryString.toLowerCase())
         }
 
         where:
-        groupingString            | resultNumber | statusCode
-        "Intellectual disability" | 1            | 200
-        "Aortopathy"              | 1            | 200
-        "atypical"                | 2            | 200
-        "dis"                     | 10           | 200
-        "invalidquerystring"      | 0            | 200
+        queryString               | statusCode
+        "BRCA"                    | 200
+        "panel"                   | 200
+        "inva"                    | 200 //invalid query should return no results
     }
 }
