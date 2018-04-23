@@ -3,12 +3,12 @@ pipeline {
     agent any
     stages {
         stage('Build and Run Integration Tests') {
-            steps {
-                echo "Fake Build"
-                script {
-                    sh './gradlew clean test'
-                }
-            }
+        	steps {
+                	echo "Fake Build"
+                	script {
+                    		sh './gradlew clean test'
+                	}
+            	}
         }
 
     }
@@ -18,6 +18,7 @@ pipeline {
             emailext body:  "Build URL: ${BUILD_URL}",
                 subject: "$currentBuild.currentResult-$JOB_NAME",
                 to: 'eric.starr@optum.com'
+	    cleanWs()
         }
         success {
             echo 'This will run only if successful'
