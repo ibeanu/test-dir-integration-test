@@ -18,7 +18,7 @@ pipeline {
             emailext body:  "Build URL: ${BUILD_URL}",
                 subject: "$currentBuild.currentResult-$JOB_NAME",
                 to: 'eric.starr@optum.com'
-	    cleanWs()
+	    deleteDir()
         }
         success {
             echo 'This will run only if successful'
