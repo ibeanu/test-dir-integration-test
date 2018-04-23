@@ -1,6 +1,6 @@
 package com.optum.testdir
 
-import com.jayway.restassured.config.ConnectionConfig
+import io.restassured.config.ConnectionConfig
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.SpringApplicationContextLoader
@@ -9,9 +9,9 @@ import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.web.WebAppConfiguration
 import spock.lang.Specification
 
-import static com.jayway.restassured.RestAssured.given
-import static com.jayway.restassured.config.LogConfig.logConfig
-import static com.jayway.restassured.config.RestAssuredConfig.newConfig
+import static io.restassured.RestAssured.given
+import static io.restassured.config.LogConfig.logConfig
+import static io.restassured.config.RestAssuredConfig.newConfig
 
 @WebAppConfiguration
 @ContextConfiguration(classes = IntegrationTestDirApplication, loader = SpringApplicationContextLoader)

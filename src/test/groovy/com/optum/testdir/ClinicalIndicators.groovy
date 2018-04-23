@@ -1,7 +1,7 @@
 package com.optum.testdir
 
-import com.jayway.restassured.path.json.exception.JsonPathException
-import com.jayway.restassured.response.Response
+import io.restassured.path.json.exception.JsonPathException
+import io.restassured.response.Response
 
 class ClinicalIndicators extends IntegrationTestBase {
 

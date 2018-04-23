@@ -3,12 +3,14 @@ This is the integration app for testing the test Directory service API endpoints
 
 Means that it can be added as part of the Jenkins build and deployment pipeline allowing for proper CI/CD process.
 
+Currently, this repo is configured to test the temp api's at http://162.13.50.221 via port 8080
+
 ## Trigger Tests
 
 Tests can be triggered with the following command
 
 ~~~~
-./gradlew clean test 
+./gradlew clean test
 ~~~~
 
 ## Standard Requirements for Test Directory Alpha
