@@ -76,7 +76,7 @@ public class OptimalFamilyStructures extends Specification {
         expect:
         Response response = dir()
             .queryParam("query", queryString)
-            .get("/" + version + "/optimal-family-structures-autocomplete")
+            .get("/" + version + "/optimal-family-structure-autocomplete")
         response.statusCode() == statusCode
         def resultList = response.body().jsonPath().getList("\$")
         assert resultList.size().equals(resultNumber)
