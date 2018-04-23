@@ -2,16 +2,18 @@
 pipeline {
     agent any
     stages {
-        stage('Build and Run Integration Tests') {
-            steps {
-                echo "Fake Build"
-                script {
-                    sh './gradlew clean test'
-                }
-            }
-        }
+	if(env.BRANCH_NAME == 'master'){
+        	stage('Build and Run Integration Tests') {
+        		steps {
+                		echo "Fake Build"
+                		script {
+                    			sh './gradlew clean test'
+                		}
+            		}
+        	}
 
-    }
+    	}
+    }	
     post {
         always {
             echo 'This will always run'

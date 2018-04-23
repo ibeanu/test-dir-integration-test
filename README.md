@@ -33,3 +33,5 @@ The service should return:
 * The list of all structured criteria associated with the prioritised list of Clinical Indications (to support facetted search)
 * The service should expect to be called as a background process while the user is typing in the interface, and should be sufficiently performant for on-screen results to update in real-time as the user is typing
 * Implement a basic user interface for the purpose of demonstrating the backend features listed above
+
+.
