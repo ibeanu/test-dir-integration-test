@@ -1,6 +1,6 @@
 package com.optum.testdir
 
-import com.jayway.restassured.response.Response
+import io.restassured.response.Response
 
 class TestMethods extends IntegrationTestBase {
 

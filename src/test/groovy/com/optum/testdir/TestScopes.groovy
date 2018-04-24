@@ -1,7 +1,7 @@
 package com.optum.testdir
 
 import com.google.common.collect.ImmutableMap
-import com.jayway.restassured.response.Response
+import io.restassured.response.Response
 
 class TestScopes extends IntegrationTestBase {
 
