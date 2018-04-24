@@ -17,8 +17,7 @@ pipeline {
             echo 'This will always run'
             emailext body:  "Build URL: ${BUILD_URL}",
                 subject: "$currentBuild.currentResult-$JOB_NAME",
-                to: 'eric.starr@optum.com'
-	    deleteDir()
+                to: 'ikenna.ibeau@optum.com'
         }
         success {
             echo 'This will run only if successful'
