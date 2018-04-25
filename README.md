@@ -13,6 +13,13 @@ Tests can be triggered with the following command
 ./gradlew clean test
 ~~~~
 
+## Accessing Test Report
+
+The generation of the test report is done by a spock extension library for better presentation.
+https://github.com/renatoathaydes/spock-reports
+
+The reports folder is configurable and located at: **build/spock-reports** folder.
+
 ## Standard Requirements for Test Directory Alpha
 
 Brief for Back-end of Test Directory Alpha – Release 1
