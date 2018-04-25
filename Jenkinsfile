@@ -18,6 +18,7 @@ pipeline {
             emailext body:  "Build URL: ${BUILD_URL}",
                 subject: "$currentBuild.currentResult-$JOB_NAME",
                 to: 'ikenna.ibeau@optum.com'
+            junit 'build/spock-reports/*.html'
         }
         success {
             echo 'This will run only if successful'
