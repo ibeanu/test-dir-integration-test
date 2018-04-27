@@ -9,8 +9,16 @@ Currently, this repo is configured to test the temp api's at http://162.13.50.22
 
 Tests can be triggered with the following command
 
+**Test for Api Docs**
+
 ~~~~
 ./gradlew clean test
+~~~~
+
+**UI Feature and Acceptance Test**
+
+~~~~
+./gradlew clean uiIntegrationTest
 ~~~~
 
 ## Accessing Test Report
