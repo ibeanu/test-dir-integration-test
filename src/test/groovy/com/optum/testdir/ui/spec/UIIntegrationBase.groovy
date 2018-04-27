@@ -23,10 +23,4 @@ class UIIntegrationBase extends GebSpec{
 
     @Value("\${server.port}")
     int port;
-
-    @CompileStatic
-    def ui() {
-        System.setProperty("webdriver.gecko.driver",
-            "/usr/local/bin/geckodriver");
-    }
 }

@@ -21,6 +21,13 @@ Tests can be triggered with the following command
 ./gradlew clean uiIntegrationTest
 ~~~~
 
+The UI integration tests uses Geb http://www.gebish.org/, spock and selenium. It will require the installation of geckodriver on the server.
+To install geckodriver 
+
+~~~~
+brew install geckodriver
+~~~~
+
 ## Accessing Test Report
 
 The generation of the test report is done by a spock extension library for better presentation.
