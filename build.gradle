@@ -1,3 +1,12 @@
+
+buildscript {
+
+    dependencies {
+
+        classpath('gradle.plugin.com.palantir.gradle.docker:gradle-docker:0.13.0')
+    }
+}
+
 plugins {
     id 'org.springframework.boot' version '2.0.1.RELEASE'
 
@@ -24,8 +33,19 @@ ext {
     }
 }
 
+apply plugin: 'com.palantir.docker'
 apply plugin: 'java'
 apply plugin: 'io.spring.dependency-management'
+
+
+group = 'springio'
+
+docker {
+    dependsOn build
+    name "${project.group}/${bootJar.baseName}"
+    files bootJar.archivePath
+    buildArgs(['JAR_FILE': "${bootJar.archiveName}"])
+}
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
