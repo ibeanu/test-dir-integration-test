@@ -12,21 +12,36 @@ Tests can be triggered with the following command
 **Test for Api Docs**
 
 ~~~~
-./gradlew clean test
+./gradlew clean apiTest
 ~~~~
 
-**UI Feature and Acceptance Test**
+*__UI Feature and Acceptance Test__*
 
 ~~~~
-./gradlew clean uiIntegrationTest
+./gradlew clean uiTest
 ~~~~
 
-The UI integration tests uses Geb http://www.gebish.org/, spock and selenium. It will require the installation of geckodriver on the server.
-To install geckodriver 
+*__Test on Firefox__*
 
 ~~~~
-brew install geckodriver
+./gradlew clean firefoxTest
 ~~~~
+
+*__Test on Chrome__*
+
+~~~~
+./gradlew clean chromeTest
+~~~~
+
+*__Test on ChromeHeadLess__*
+
+~~~~
+./gradlew clean ChromeHeadLessTest
+~~~~
+
+The UI integration tests uses Geb http://www.gebish.org/, spock and selenium. It has been configured to run tests on Firefox, Chrome and ChromeHeadless drivers.
+
+
 
 ## Accessing Test Report
 

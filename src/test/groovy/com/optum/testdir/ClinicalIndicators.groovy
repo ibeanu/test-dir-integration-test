@@ -1,37 +1,58 @@
 package com.optum.testdir
 
-import io.restassured.path.json.exception.JsonPathException
+import com.optum.testdir.service.ClinicalIndicatorTestData
+import com.optum.testdir.service.DataService
 import io.restassured.response.Response
+import org.junit.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.context.annotation.Bean
+
 
 class ClinicalIndicators extends IntegrationTestBase {
+
+
+    @TestConfiguration
+    static class DataServiceConfig {
+
+        @Bean
+        public DataService dataService() {
+            return new ClinicalIndicatorTestData();
+        }
+    }
+
+    @Autowired
+    DataService dataService;
 
     def "get /clinical-indicators/{id} should return a clinical indicator"(int id, int statusCode, int serviceGroupId,
                                                                            String indicationId, String testId, String testName,
                                                                            String technology, String targetGene,
                                                                            String contentType) {
-        expect:
-        Response response;
-        try {
-            response = dir().get("/" + version + "/clinical-indicators/{id}", id)
-            response.statusCode() == statusCode
-            response.contentType().equals(contentType)
 
-            Integer.valueOf(response.body().jsonPath().getString("specialist_service_group_id")) == serviceGroupId
-            response.body().jsonPath().getString("test_ID_code").equals(testId)
-            response.body().jsonPath().getString("test_name").equals(testName)
-            response.body().jsonPath().get("technology").equals(technology)
-            response.body().jsonPath().get("target_gene").equals(targetGene)
-            response.body().jsonPath().get("clinical_indication_ID_code").equals(indicationId)
+        given: "The url endpoint /clinical-indicators/{id}"
 
-        } catch (JsonPathException e ) {
-            response.contentType().equals(contentType)
-        }
+        when: "Call is made by id"
+        Response response = dir().get("/" + version + "/clinical-indicators/{id}", id)
 
-        where:
+        then: "The response from the resource should have the expected status code"
+        response.statusCode() == statusCode
+
+        and: "The expect content-type"
+        response.contentType().equals(contentType)
+
+        and: "The response body should contain the relevant data"
+        Integer.valueOf(response.body().jsonPath().getString("specialist_service_group_id")) == serviceGroupId
+        response.body().jsonPath().getString("test_ID_code").equals(testId)
+        response.body().jsonPath().getString("test_name").equals(testName)
+        response.body().jsonPath().get("technology").equals(technology)
+        response.body().jsonPath().get("target_gene").equals(targetGene)
+        response.body().jsonPath().get("clinical_indication_ID_code").equals(indicationId)
+
+        where: "The expected data is the below data"
         id   | statusCode | serviceGroupId | indicationId | testId   | testName                 | technology                       | targetGene   | contentType
         1001 | 200        | 93             | "C153"       | "C153.6" | "BRAF-AKAP9 FISH/RT-PCR" | "FISH/Targeted mutation testing" | "BRAF-AKAP9" | "application/json; charset=utf-8"
         1002 | 200        | 93             | "C153"       | "C153.7" | "BRAF-CCDC6 FISH/RT-PCR" | "FISH/Targeted mutation testing" | "BRAF-CCDC6" | "application/json; charset=utf-8"
-        1    | 504        | 0              | null         | null     | null                     | null                             | null         | "text/plain; charset=utf-8"
+        1    | 404        | 0              | null         | null     | null                     | null                             | null         | "application/json; charset=utf-8"
     }
 
     def "get /clinical-indicators-search with query should return list of clinical-indicators"(String query, String code,

@@ -1,25 +1,31 @@
-buildscript {
+plugins {
+    id 'org.springframework.boot' version '2.0.1.RELEASE'
+
+    id "java"
+    id "idea"
+    id "groovy"
+    id "com.energizedwork.webdriver-binaries" version "1.0"
+    id "com.energizedwork.idea-base" version "1.2"
+}
+
+ext {
+    // The drivers we want to use
+    drivers = ["firefox", "chrome", "chromeHeadless"]
+
     ext {
-        springBootVersion = '1.3.4.RELEASE'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        //spring boot
+        springBootVersion = '2.0.1.RELEASE'
+        groovyVersion = '2.4.12'
+        gebVersion = '2.1'
+        seleniumVersion = '3.6.0'
+        chromeDriverVersion = '2.32'
+        geckoDriverVersion = '0.20.1'
+        restAssuredVersion = '3.1.0'
     }
 }
 
 apply plugin: 'java'
-apply plugin: 'groovy'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-apply plugin: 'spring-boot'
-
-jar {
-    baseName = 'demo'
-    version = '0.0.1-SNAPSHOT'
-}
+apply plugin: 'io.spring.dependency-management'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -28,44 +34,90 @@ repositories {
     mavenCentral()
 }
 
-test {
+task apiTests(type: Test) {
     useJUnit {
         exclude '**/*UISpec.class'
     }
 }
 
-task uiIntegrationTest(type: Test) {
-    useJUnit {
-        include '**/*UISpec.class'
-    }
-}
-
-
-
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("com.google.guava:guava:22.0")
 
+    //Geb and geb spock
+    testCompile ("org.gebish:geb-core:$gebVersion")
+    testCompile ("org.gebish:geb-spock:$gebVersion")
 
-    testCompile ("org.gebish:geb-core:2.1")
-    testCompile ("org.gebish:geb-spock:2.1")
-    testCompile ("org.seleniumhq.selenium:selenium-firefox-driver:3.6.0")
-    testCompile ("org.seleniumhq.selenium:selenium-support:3.6.0")
+    // If using JUnit, need to depend on geb-junit (3 or 4)
+    testCompile "org.gebish:geb-junit4:$gebVersion"
+
+    // Drivers
+    testCompile "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
+    testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
+
+    testCompile ("org.seleniumhq.selenium:selenium-support:$seleniumVersion")
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("org.codehaus.groovy:groovy-all")
-    testCompile("org.spockframework:spock-core:1.1-groovy-2.4")
-    testCompile("org.spockframework:spock-spring")
-    testCompile("io.rest-assured:rest-assured:3.1.0")
+    testCompile("org.spockframework:spock-core:1.1-groovy-2.4"){
+        exclude group: "org.codehaus.groovy"
+    }
+    testCompile("org.spockframework:spock-spring:1.1-groovy-2.4")
 
 
+    testCompile("io.rest-assured:rest-assured:$restAssuredVersion")
+
+    //Report Library for spock tests
     testCompile('com.athaydes:spock-reports:1.5.0') {
         transitive = false
     }
 
+    //Logging
     testCompile 'org.slf4j:slf4j-api:1.7.13'
     testCompile 'org.slf4j:slf4j-simple:1.7.13'
 
     configurations {
         compile.exclude module: 'logback-classic'
     }
+
 }
+
+webdriverBinaries {
+    chromedriver chromeDriverVersion
+    geckodriver geckoDriverVersion
+}
+
+drivers.each { driver ->
+    task "${driver}Test"(type: Test) {
+        useJUnit {
+            include '**/*UISpec.class'
+        }
+        group JavaBasePlugin.VERIFICATION_GROUP
+
+        outputs.upToDateWhen { true }  // Always run tests
+
+        systemProperty "geb.build.reportsDir", reporting.file("geb/$name")
+        systemProperty "geb.env", driver
+    }
+}
+
+
+test {
+    dependsOn apiTests
+    enabled = false
+}
+
+task uiTest(type: Test) {
+    dependsOn drivers.collect { tasks["${it}Test"] }
+}
+tasks.withType(Test) {
+    maxHeapSize = "1g"
+    jvmArgs '-XX:MaxMetaspaceSize=128m'
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
+tasks.withType(GroovyCompile) {
+    groovyOptions.forkOptions.memoryMaximumSize = '256m'
+}
+
